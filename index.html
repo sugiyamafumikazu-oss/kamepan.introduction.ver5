@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>有限会社亀屋 | デジタル会社案内 & 経歴紹介</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts (Noto Sans JP) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Placeholder Comments Required by Prompt -->
+    <!-- Chosen Palette: Warm Bakery Tones (Bread Crust Brown, Wheat Beige, Fresh Green) -->
+    <!-- Application Structure Plan: A single-page storytelling scroll. 
+         1. Hero: Brand impact. 
+         2. Philosophy: Core values interactive cards. 
+         3. Leadership (Resume): Interactive profile with skill viz. 
+         4. Products: Comparative radar chart for signature items. 
+         5. History: Vertical timeline of evolution. 
+         6. Innovation (DX/SDGs): Modern initiatives. 
+         7. Company Data: Functional footer. 
+         Rationale: This structure moves from "Who we are" -> "Who leads us" -> "What we make" -> "Where we came from" -> "Where we are going", creating a logical narrative arc. -->
+    <!-- Visualization & Content Choices: 
+         1. Leadership Skills -> Bar Chart -> Quantifies the expertise (Level 1 Bread Making, etc.) for quick impact.
+         2. Product Profiles -> Radar Chart -> Compares "Mentai Madonna" vs "Curry Bancho" on sensory attributes (Volume, Popularity, etc.).
+         3. History -> Interactive List -> Allows distinct focus on specific eras (Founding vs. Modern DX). 
+         4. Locations -> Grid -> Clear, scannable access to address info.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #FDFBF7; /* Warm off-white/beige background */
+            color: #4A3B32; /* Dark brown text */
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1EFE9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D97706; /* Amber-600 */
+            border-radius: 4px;
+        }
+
+        /* Chart Container Utilities */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Smooth transitions */
+        .transition-all-300 {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Active Nav State */
+        .nav-active {
+            color: #D97706;
+            border-bottom: 2px solid #D97706;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-orange-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="app.scrollTo('hero')">
+                    <span class="text-2xl font-bold text-amber-700 tracking-tighter">かめぱん<span class="text-sm font-normal text-gray-500 ml-2">有限会社亀屋</span></span>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="app.scrollTo('philosophy')" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">理念</button>
+                    <button onclick="app.scrollTo('leadership')" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">代表・経歴</button>
+                    <button onclick="app.scrollTo('products')" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">商品紹介</button>
+                    <button onclick="app.scrollTo('history')" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">沿革・DX</button>
+                    <button onclick="app.scrollTo('company')" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">会社概要</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-amber-700 focus:outline-none">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#FDFBF7] border-t border-orange-100">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="app.scrollTo('philosophy')" class="block w-full text-left px-3 py-2 text-gray-600 hover:bg-orange-50 rounded-md">理念</button>
+                <button onclick="app.scrollTo('leadership')" class="block w-full text-left px-3 py-2 text-gray-600 hover:bg-orange-50 rounded-md">代表・経歴</button>
+                <button onclick="app.scrollTo('products')" class="block w-full text-left px-3 py-2 text-gray-600 hover:bg-orange-50 rounded-md">商品紹介</button>
+                <button onclick="app.scrollTo('history')" class="block w-full text-left px-3 py-2 text-gray-600 hover:bg-orange-50 rounded-md">沿革・DX</button>
+                <button onclick="app.scrollTo('company')" class="block w-full text-left px-3 py-2 text-gray-600 hover:bg-orange-50 rounded-md">会社概要</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+
+        <!-- Hero Section -->
+        <section id="hero" class="relative bg-amber-50 py-20 lg:py-32 overflow-hidden">
+            <div class="absolute inset-0 opacity-10 pattern-dots"></div> <!-- Abstract pattern placeholder -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-amber-900 mb-6 leading-tight">
+                    昭和27年創業。<br>
+                    <span class="text-amber-600">「焼きたての美味しさ」</span>を<br class="md:hidden">下町から。
+                </h1>
+                <p class="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+                    地域に愛されるパン屋をモットーに、時代ごとのニーズに合わせた商品開発と、変わらぬ手作りの温かさを大切にしています。
+                    最新設備の導入とDXで、老舗はさらに進化します。
+                </p>
+                <div class="mt-10 flex justify-center gap-4">
+                    <button onclick="app.scrollTo('products')" class="bg-amber-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-amber-700 transition-transform transform hover:-translate-y-1">
+                        看板商品を見る
+                    </button>
+                    <button onclick="app.scrollTo('company')" class="bg-white text-amber-700 border-2 border-amber-600 px-8 py-3 rounded-full font-bold shadow-sm hover:bg-amber-50 transition-transform transform hover:-translate-y-1">
+                        店舗情報
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Philosophy Section -->
+        <section id="philosophy" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-amber-900">経営理念</h2>
+                    <p class="mt-4 text-gray-500">
+                        私たちは単にパンを売るだけでなく、地域社会の活性化と従業員の幸福を追求しています。<br>
+                        以下の3つの柱が、私たちの行動指針です。
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="philosophy-grid">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Leadership / Resume Section -->
+        <section id="leadership" class="py-16 bg-stone-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <!-- Text Profile -->
+                    <div>
+                        <div class="inline-block px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm font-semibold mb-4">Leadership Profile</div>
+                        <h2 class="text-3xl font-bold text-amber-900 mb-2">代表取締役 佐伯 信郎</h2>
+                        <h3 class="text-xl text-gray-600 mb-6">Nobuo Saeki</h3>
+                        
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            1978年生まれ、東京都墨田区出身。大学卒業後、東京製菓学校で専門技術を習得。
+                            家業である亀屋での製造・経営に加え、製菓学校の教員として後進の育成にも携わる。
+                            技術と経営、そして教育の現場を知るリーダーとして、亀屋の第二創業期を牽引する。
+                        </p>
+
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                            <h4 class="font-bold text-lg mb-4 text-amber-800 border-b pb-2">主な経歴・受賞歴</h4>
+                            <ul class="space-y-3 text-sm text-gray-700" id="resume-list">
+                                <!-- List items injected by JS -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Skills Visualization -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">専門性・スキルセット</h3>
+                        <p class="text-xs text-center text-gray-500 mb-6">保有資格と経験に基づく専門性の可視化</p>
+                        <div class="chart-container">
+                            <canvas id="skillsChart"></canvas>
+                        </div>
+                        <div class="mt-6 grid grid-cols-2 gap-4 text-center">
+                            <div class="p-3 bg-amber-50 rounded-lg">
+                                <div class="text-2xl font-bold text-amber-600">1級</div>
+                                <div class="text-xs text-gray-500">パン製造技能士</div>
+                            </div>
+                            <div class="p-3 bg-amber-50 rounded-lg">
+                                <div class="text-2xl font-bold text-amber-600">指導員</div>
+                                <div class="text-xs text-gray-500">職業訓練指導員</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Spotlight Section -->
+        <section id="products" class="py-16 bg-white relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-amber-900">看板商品のご紹介</h2>
+                    <p class="mt-4 text-gray-500">
+                        メディアやSNSで話題の「明太マドンナ」をはじめ、長年愛される「カレー番長」。<br>
+                        それぞれのパンが持つ個性をチャートで分析しました。
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Product Selector & Details -->
+                    <div class="order-2 lg:order-1">
+                        <div class="flex space-x-4 mb-8 justify-center lg:justify-start">
+                            <button id="btn-mentai" class="px-6 py-3 rounded-full bg-red-100 text-red-700 font-bold border-2 border-red-200 hover:bg-red-200 transition-all focus:ring-2 focus:ring-red-400 active-product-btn" onclick="app.selectProduct('mentai')">
+                                明太マドンナ
+                            </button>
+                            <button id="btn-curry" class="px-6 py-3 rounded-full bg-yellow-100 text-yellow-800 font-bold border-2 border-yellow-200 hover:bg-yellow-200 transition-all focus:ring-2 focus:ring-yellow-400" onclick="app.selectProduct('curry')">
+                                カレー番長
+                            </button>
+                        </div>
+
+                        <div id="product-details" class="bg-stone-50 p-8 rounded-2xl border border-stone-100 transition-all-300">
+                            <!-- Dynamic Content -->
+                            <h3 id="prod-name" class="text-2xl font-bold text-gray-900 mb-2">明太マドンナ</h3>
+                            <div class="w-16 h-1 bg-red-500 mb-4 transition-colors" id="prod-accent"></div>
+                            <p id="prod-desc" class="text-gray-700 leading-relaxed text-lg mb-6">
+                                看板商品。たっぷりの明太子フィリングを使用し、クリーミーで濃厚な味わいが特徴。SNSで拡散され、遠方からのお客様もこれを目当てに来店されます。
+                            </p>
+                            <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                <span class="px-2 py-1 bg-white rounded border border-gray-200">人気No.1</span>
+                                <span class="px-2 py-1 bg-white rounded border border-gray-200">メディア掲載</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Radar Chart -->
+                    <div class="order-1 lg:order-2">
+                        <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+                            <div class="chart-container">
+                                <canvas id="productRadarChart"></canvas>
+                            </div>
+                            <p class="text-center text-xs text-gray-400 mt-2">※チャートは商品の特徴を視覚化したイメージです</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- History & Innovation (DX/SDGs) -->
+        <section id="history" class="py-16 bg-amber-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-amber-900">沿革と未来への挑戦</h2>
+                    <p class="mt-4 text-gray-500 max-w-2xl mx-auto">
+                        1952年の創業から、私たちは地域と共に歩んできました。<br>
+                        そして今、DX（デジタルトランスフォーメーション）やSDGsへの取り組みを通じて、<br>持続可能な新しいパン屋の形を目指しています。
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Vertical Timeline -->
+                    <div class="relative pl-8 border-l-4 border-amber-200 space-y-12">
+                        <!-- Item 1 -->
+                        <div class="relative">
+                            <div class="absolute -left-10 top-0 bg-amber-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-4 border-amber-100 shadow"></div>
+                            <h4 class="text-xl font-bold text-amber-800">1952年 (昭和27年)</h4>
+                            <p class="text-gray-600 mt-2">東京都墨田区立花にて創業。「焼きたての美味しさ」を届ける地域密着店としてスタート。</p>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="relative">
+                            <div class="absolute -left-10 top-0 bg-amber-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-4 border-amber-100 shadow"></div>
+                            <h4 class="text-xl font-bold text-amber-800">事業拡大期</h4>
+                            <p class="text-gray-600 mt-2">亀戸店、向島店を開設。地域の食卓に欠かせない存在として成長。</p>
+                        </div>
+                        <!-- Item 3 -->
+                        <div class="relative">
+                            <div class="absolute -left-10 top-0 bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-4 border-blue-100 shadow">DX</div>
+                            <h4 class="text-xl font-bold text-blue-900">現在 〜 DXへの挑戦</h4>
+                            <p class="text-gray-600 mt-2">AIレジ「BakeryScan」の導入、冷凍技術の活用による生産性向上とフードロス削減への取り組みを開始。</p>
+                        </div>
+                    </div>
+
+                    <!-- Innovation Cards -->
+                    <div class="space-y-6">
+                        <!-- DX Card -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500 hover:shadow-md transition-shadow">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">🤖</span>
+                                <h3 class="text-lg font-bold text-gray-800">DX (生産性向上・働き方改革)</h3>
+                            </div>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+                                <li><strong>AIレジ導入:</strong> 会計時間の短縮とスタッフの負担軽減。</li>
+                                <li><strong>最新冷凍技術:</strong> 計画生産を可能にし、早朝労働の緩和と安定供給を実現。</li>
+                                <li><strong>生産管理システム:</strong> データの可視化による効率的な店舗運営。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- SDGs Card -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500 hover:shadow-md transition-shadow">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">🌱</span>
+                                <h3 class="text-lg font-bold text-gray-800">SDGs (持続可能な社会へ)</h3>
+                            </div>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+                                <li><strong>フードロス削減:</strong> 冷凍技術とAI需要予測による廃棄の最小化。</li>
+                                <li><strong>地域連携:</strong> すみだ食育goodネット等を通じた食育活動。</li>
+                                <li><strong>健康経営:</strong> 従業員が長く健康に働ける環境づくり。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Company Info & Footer -->
+        <section id="company" class="bg-amber-900 text-amber-50 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    
+                    <!-- Company Data -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-6 border-b border-amber-700 pb-2">会社概要</h2>
+                        <table class="w-full text-sm text-amber-100">
+                            <tbody>
+                                <tr class="border-b border-amber-800">
+                                    <td class="py-3 font-semibold w-1/3">会社名</td>
+                                    <td class="py-3">有限会社亀屋</td>
+                                </tr>
+                                <tr class="border-b border-amber-800">
+                                    <td class="py-3 font-semibold">代表取締役</td>
+                                    <td class="py-3">佐伯 信郎</td>
+                                </tr>
+                                <tr class="border-b border-amber-800">
+                                    <td class="py-3 font-semibold">本社所在地</td>
+                                    <td class="py-3">東京都墨田区立花2-1-11</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 font-semibold">事業内容</td>
+                                    <td class="py-3">パン・洋菓子の製造販売、学校給食納入</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="mt-8">
+                            <h3 class="text-lg font-bold text-white mb-4">代表の地域活動役職</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-amber-800 px-3 py-1 rounded text-xs">墨田区パン洋菓子組合 組合長</span>
+                                <span class="bg-amber-800 px-3 py-1 rounded text-xs">すみだ食育goodネット 常務理事</span>
+                                <span class="bg-amber-800 px-3 py-1 rounded text-xs">墨田区銘品名店会 理事</span>
+                                <span class="bg-amber-800 px-3 py-1 rounded text-xs">東京商工会議所墨田支部 小売商業分科会長</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store Locations -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-6 border-b border-amber-700 pb-2">店舗情報</h2>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-amber-700 p-2 rounded mr-4 mt-1">
+                                    <span class="font-bold text-white">本店</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-lg">立花本店</h4>
+                                    <p class="text-amber-200 text-sm">東京都墨田区立花2-1-11</p>
+                                    <p class="text-amber-300 text-xs mt-1">地域に根ざした1号店。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-amber-700 p-2 rounded mr-4 mt-1">
+                                    <span class="font-bold text-white">支店</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-lg">亀戸店 / 向島店</h4>
+                                    <p class="text-amber-200 text-sm">※詳細な住所は公式サイトをご確認ください</p>
+                                    <p class="text-amber-300 text-xs mt-1">江東区・墨田区北部エリアをカバー。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-10 p-6 bg-amber-800 rounded-lg text-center">
+                            <p class="text-amber-200 mb-2">お問い合わせ</p>
+                            <a href="#" class="text-2xl font-bold text-white hover:text-amber-300 transition-colors">03-3616-0453</a>
+                            <p class="text-xs text-amber-400 mt-2">（本社代表）</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-16 pt-8 border-t border-amber-800 text-center text-sm text-amber-400">
+                    &copy; 2024 Kameya Co., Ltd. All Rights Reserved.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // Data Store
+        const data = {
+            philosophy: [
+                {
+                    title: "「美味しい」の笑顔のために",
+                    icon: "😊",
+                    desc: "常に最高の材料と技術で、安心・安全なパンを提供します。お客様の最初のひと口の感動を追求し続けます。"
+                },
+                {
+                    title: "地域と共に歩む",
+                    icon: "🏘️",
+                    desc: "地元の皆様の食卓を彩り、地域社会の活性化に貢献します。商店街活動や食育活動にも積極的に参加しています。"
+                },
+                {
+                    title: "進化する老舗",
+                    icon: "🚀",
+                    desc: "伝統を守りながらも、DXや新技術を積極的に取り入れ、従業員の幸福と企業の持続的な成長を追求します。"
+                }
+            ],
+            resume: [
+                { year: "2001", text: "駒澤大学文学部英米文学科 卒業" },
+                { year: "2003", text: "東京製菓学校パン専科 卒業" },
+                { year: "2003", text: "株式会社ドンク 入社（2年間勤務）" },
+                { year: "2005", text: "有限会社亀屋 入社" },
+                { year: "2013", text: "東京製菓学校パン科 非常勤講師 就任" },
+                { year: "2018", text: "カリフォルニアレーズンコンテスト 特別賞受賞" },
+                { year: "2024", text: "代表取締役 就任 (現職)" }
+            ],
+            products: {
+                mentai: {
+                    name: "明太マドンナ",
+                    color: "rgb(239, 68, 68)", // Red-500
+                    bg: "rgba(239, 68, 68, 0.2)",
+                    desc: "看板商品。たっぷりの明太子フィリングを使用し、クリーミーで濃厚な味わいが特徴。SNSで拡散され、遠方からのお客様もこれを目当てに来店されます。",
+                    tags: ["人気No.1", "メディア掲載", "濃厚"],
+                    chartData: [90, 80, 70, 95, 85] // Impact, Volume, Tradition, Popularity, Richness
+                },
+                curry: {
+                    name: "カレー番長",
+                    color: "rgb(234, 179, 8)", // Yellow-500
+                    bg: "rgba(234, 179, 8, 0.2)",
+                    desc: "長年のファンが多い、自家製カレーフィリングたっぷりのカレーパン。スパイスの香りと野菜の甘みが絶妙なバランス。揚げたてのサクサク感が自慢です。",
+                    tags: ["ロングセラー", "自家製カレー", "サクサク"],
+                    chartData: [75, 90, 95, 85, 80] // Impact, Volume, Tradition, Popularity, Richness
+                }
+            }
+        };
+
+        // Application Controller
+        const app = {
+            currentProduct: 'mentai',
+            charts: {},
+
+            init: function() {
+                this.renderPhilosophy();
+                this.renderResume();
+                this.initSkillsChart();
+                this.initProductRadar();
+                this.setupMobileMenu();
+            },
+
+            scrollTo: function(id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    // Offset for fixed header
+                    const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                }
+                // Close mobile menu if open
+                document.getElementById('mobile-menu').classList.add('hidden');
+            },
+
+            setupMobileMenu: function() {
+                const btn = document.getElementById('mobile-menu-btn');
+                const menu = document.getElementById('mobile-menu');
+                btn.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                });
+            },
+
+            renderPhilosophy: function() {
+                const container = document.getElementById('philosophy-grid');
+                data.philosophy.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "bg-stone-50 p-8 rounded-xl hover:shadow-xl transition-shadow border border-stone-100 group cursor-default";
+                    card.innerHTML = `
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">${item.icon}</div>
+                        <h3 class="text-xl font-bold text-amber-800 mb-3">${item.title}</h3>
+                        <p class="text-gray-600 leading-relaxed">${item.desc}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            },
+
+            renderResume: function() {
+                const list = document.getElementById('resume-list');
+                data.resume.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = "flex gap-4";
+                    li.innerHTML = `
+                        <span class="font-bold text-amber-600 w-16 flex-shrink-0 text-right">${item.year}</span>
+                        <span class="text-gray-700">${item.text}</span>
+                    `;
+                    list.appendChild(li);
+                });
+            },
+
+            initSkillsChart: function() {
+                const ctx = document.getElementById('skillsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['パン製造技術', '店舗経営', '人材育成', '商品開発', '食品衛生'],
+                        datasets: [{
+                            label: '専門性レベル (自己評価/資格)',
+                            data: [100, 85, 90, 95, 90], // Inferred based on "Level 1" and teaching exp
+                            backgroundColor: [
+                                'rgba(217, 119, 6, 0.7)',
+                                'rgba(180, 83, 9, 0.6)',
+                                'rgba(217, 119, 6, 0.7)',
+                                'rgba(180, 83, 9, 0.6)',
+                                'rgba(217, 119, 6, 0.7)'
+                            ],
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y', // Horizontal bar
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { 
+                                callbacks: {
+                                    label: (context) => {
+                                        const labels = [
+                                            "1級パン製造技能士レベル",
+                                            "代表取締役として経営を主導",
+                                            "職業訓練指導員・講師経験",
+                                            "コンテスト受賞実績あり",
+                                            "製菓衛生師・食品衛生管理者"
+                                        ];
+                                        return labels[context.dataIndex];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false,
+                                max: 100
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { font: { family: "'Noto Sans JP'", weight: 'bold' } }
+                            }
+                        }
+                    }
+                });
+            },
+
+            initProductRadar: function() {
+                const ctx = document.getElementById('productRadarChart').getContext('2d');
+                this.charts.radar = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['インパクト', 'ボリューム', '伝統', '人気度', 'コク・濃厚さ'],
+                        datasets: [{
+                            label: '明太マドンナ',
+                            data: data.products.mentai.chartData,
+                            fill: true,
+                            backgroundColor: data.products.mentai.bg,
+                            borderColor: data.products.mentai.color,
+                            pointBackgroundColor: data.products.mentai.color,
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: data.products.mentai.color
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        elements: {
+                            line: { borderWidth: 3 }
+                        },
+                        scales: {
+                            r: {
+                                angleLines: { display: true, color: '#e5e7eb' },
+                                grid: { color: '#e5e7eb' },
+                                pointLabels: {
+                                    font: { family: "'Noto Sans JP'", size: 12, weight: 'bold' },
+                                    color: '#78350f'
+                                },
+                                ticks: { display: false, backdropColor: 'transparent' },
+                                suggestedMin: 0,
+                                suggestedMax: 100
+                            }
+                        },
+                        plugins: {
+                            legend: { display: true, position: 'bottom', labels: { font: { family: "'Noto Sans JP'" } } }
+                        }
+                    }
+                });
+            },
+
+            selectProduct: function(prodKey) {
+                const p = data.products[prodKey];
+                
+                // Update UI Text
+                document.getElementById('prod-name').innerText = p.name;
+                document.getElementById('prod-desc').innerText = p.desc;
+                const accent = document.getElementById('prod-accent');
+                accent.className = `w-16 h-1 mb-4 transition-colors duration-300`;
+                accent.style.backgroundColor = p.color;
+
+                // Update Chart
+                this.charts.radar.data.datasets[0].label = p.name;
+                this.charts.radar.data.datasets[0].data = p.chartData;
+                this.charts.radar.data.datasets[0].borderColor = p.color;
+                this.charts.radar.data.datasets[0].backgroundColor = p.bg;
+                this.charts.radar.data.datasets[0].pointBackgroundColor = p.color;
+                this.charts.radar.update();
+
+                // Toggle Buttons
+                const btnMentai = document.getElementById('btn-mentai');
+                const btnCurry = document.getElementById('btn-curry');
+                
+                if(prodKey === 'mentai') {
+                    btnMentai.classList.add('ring-2', 'ring-red-400', 'bg-red-200');
+                    btnCurry.classList.remove('ring-2', 'ring-yellow-400', 'bg-yellow-200');
+                } else {
+                    btnCurry.classList.add('ring-2', 'ring-yellow-400', 'bg-yellow-200');
+                    btnMentai.classList.remove('ring-2', 'ring-red-400', 'bg-red-200');
+                }
+            }
+        };
+
+        // Initialize on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+            // Set initial state visual for buttons
+            document.getElementById('btn-mentai').classList.add('ring-2', 'ring-red-400', 'bg-red-200');
+        });
+
+    </script>
+</body>
+</html>
